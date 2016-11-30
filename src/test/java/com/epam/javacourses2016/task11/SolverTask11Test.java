@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class SolverTask11Test {
-    @Test(enabled = false, dataProvider = "people")
+    @Test(enabled = true, dataProvider = "people")
     public void testEmulate(String[] arr, String result) throws Exception {
         SolverTask11 task11 = new SolverTask11();
         Assert.assertEquals(task11.emulate(convertToLinkedList(arr)), result);

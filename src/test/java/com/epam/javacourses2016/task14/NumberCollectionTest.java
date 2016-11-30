@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
  */
 public class NumberCollectionTest {
 
-    @Test(enabled = false, dataProvider = "numbers")
+    @Test(enabled = true, dataProvider = "numbers")
     public void testNearest(Number[] numbers, Number value, Number result) throws Exception {
         AbstractCollectionCreator.NumberCollection<Number> collection = AbstractCollectionCreator.createCollection(Number.class);
         for (Number n: numbers) collection.add(n);
