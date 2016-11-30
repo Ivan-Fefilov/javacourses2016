@@ -2,7 +2,9 @@ package com.epam.javacourses2016.task19;
 
 import com.epam.javacourses2016.Car;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * На кольцевой гоночной трассе стоит N автомобилей.
@@ -17,7 +19,7 @@ public class SolverTask19 {
      * @param numberLaps Количество кругов.
      * @return Количество осуществленных обгонов.
      */
-    int getNumberOvertaking(Set<Car> cars, long lengthLap, int numberLaps) {
+    int getNumberOvertaking1(Set<Car> cars, long lengthLap, int numberLaps) {
         int count = 0;
         for (Car firstCar : cars) {
             for (Car secondCar : cars) {
@@ -28,24 +30,82 @@ public class SolverTask19 {
     }
 
     private int getOvertake(Car firstCar, Car secondCar, long lengthLap, int numberLaps) {
-        int count = 0;
-        if (firstCar.getSpeed() <= secondCar.getSpeed()) {
-            return count;
-        }
 
+        double numberOfOvertakes = 0;
+        if (firstCar.getSpeed() <= secondCar.getSpeed()) {
+            return (int) numberOfOvertakes;
+        }
         double lengthFirstCar = lengthLap * numberLaps - firstCar.getStartPosition();
         double timeFirstCar = lengthFirstCar / firstCar.getSpeed();
-        double lapsFirstCar = lengthFirstCar / lengthLap;
+
         double lengthSecondCar = timeFirstCar * secondCar.getSpeed() + secondCar.getStartPosition();
         double lapsSecondCar = lengthSecondCar / lengthLap;
 
-        count = (int) (lapsSecondCar / (lapsFirstCar / lapsSecondCar));
+        numberOfOvertakes = numberLaps - lapsSecondCar;
+
         if (firstCar.getStartPosition() < secondCar.getStartPosition()) {
-            double timeBeforeOvertake = (secondCar.getStartPosition() - firstCar.getStartPosition()) / (firstCar.getSpeed() - secondCar.getSpeed());
-            if (timeBeforeOvertake <= timeFirstCar) {
-                count++;
+            numberOfOvertakes++;
+        }
+        return (int) numberOfOvertakes;
+    }
+
+    /**
+     * @param cars       Расположенные на трассе машины.
+     * @param lengthLap  Длина трассы.
+     * @param numberLaps Количество кругов.
+     * @return Количество осуществленных обгонов.
+     */
+    int getNumberOvertaking(Set<Car> cars, long lengthLap, int numberLaps) {
+        Set<Car> sortedCars = new TreeSet<>(new CarCompatator());
+        sortedCars.addAll(cars);
+        int numberOfOvertakes = 0;
+        while (!raceComplete(sortedCars, numberLaps)) {
+            int i = 0;
+            int timeDelta = 1;
+            for (Car car : sortedCars) {
+                car.setActualPosition(i);
+                i++;
+                int newDistance = timeDelta * car.getSpeed();
+                if (car.getDistanceCovered() + newDistance <= lengthLap) {
+                    car.setDistanceCovered(car.getDistanceCovered() + newDistance);
+                } else {
+                    car.setDistanceCovered(car.getDistanceCovered() + newDistance);
+                    car.setNumberOfFinishedLaps(car.getNumberOfFinishedLaps() + 1);
+                }
+            }
+            Set<Car> sortedCarsSecond = new TreeSet<>(new CarCompatator());
+            sortedCarsSecond.addAll(sortedCars);
+            sortedCars.clear();
+            i = 0;
+            for (Car car : sortedCarsSecond) {
+                if (i > car.getActualPosition()) {
+                    numberOfOvertakes = numberOfOvertakes + (i - car.getActualPosition());
+                }
+                i++;
+                if (car.getNumberOfFinishedLaps() < numberLaps) {
+                    if (car.getDistanceCovered() >= lengthLap) {
+                        car.setDistanceCovered(car.getDistanceCovered() - lengthLap);
+                    }
+                    sortedCars.add(car);
+                }
             }
         }
-        return count;
+        return numberOfOvertakes;
+    }
+
+    private boolean raceComplete(Set<Car> cars, long numberLaps) {
+        for (Car car : cars) {
+            if (car.getNumberOfFinishedLaps() <= numberLaps) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private class CarCompatator implements Comparator<Car> {
+        @Override
+        public int compare(Car o1, Car o2) {
+            return Long.compare(o1.getDistanceCovered(), o2.getDistanceCovered());
+        }
     }
 }
