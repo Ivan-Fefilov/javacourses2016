@@ -1,6 +1,6 @@
 package com.epam.javacourses2016.task14;
 
-import java.util.*;
+import java.util.Collection;
 
 
 /**

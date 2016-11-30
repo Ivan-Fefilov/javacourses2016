@@ -7,7 +7,7 @@ public class GraphCreator extends AbstractGraphCreator {
 
     @Override
     AbstractGraph createGraph(int numberNodes) {
-        if(numberNodes<=0){
+        if (numberNodes <= 0) {
             return null;
         }
         return new Graph(numberNodes);

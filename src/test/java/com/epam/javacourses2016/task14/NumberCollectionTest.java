@@ -4,8 +4,6 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
-
 /**
  * Created by kodoo on 13.11.16.
  */
@@ -15,7 +13,7 @@ public class NumberCollectionTest {
     public void testNearest(Number[] numbers, Number value, Number result) throws Exception {
         AbstractCollectionCreator creator = new CollectionCreator<>();
         AbstractCollectionCreator.NumberCollection<Number> collection = creator.createCollection(Number.class);
-        for (Number n: numbers) collection.add(n);
+        for (Number n : numbers) collection.add(n);
         Number min = collection.nearest(value);
         Assert.assertEquals(min, result);
     }

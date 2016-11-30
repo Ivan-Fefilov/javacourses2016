@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.testng.Assert.*;
-
 public class GraphTest {
     @Test(enabled = true, dataProvider = "add-edges")
-    public void testAddEdge(int numberNodes, Integer[][] edges,Integer[][]result) throws Exception {
+    public void testAddEdge(int numberNodes, Integer[][] edges, Integer[][] result) throws Exception {
         AbstractGraphCreator graphCreator = new GraphCreator();
         AbstractGraphCreator.AbstractGraph graph = graphCreator.createGraph(numberNodes);
         for (int i = 0; i < edges.length; i++) {
@@ -74,9 +72,9 @@ public class GraphTest {
     @DataProvider(name = "exist-edges")
     public Object[][] existEdges() {
         return new Object[][]{
-                {4, new Integer[][]{{4, 2}, {3, 2}, {2, 2}}, new Integer[][]{{4, 2}, {3, 2}},new Boolean[]{true,true}},
-                {3, new Integer[][]{{4, 2}, {3, 2}, {2, 2}}, new Integer[][]{{2, 4}, {2, 2},{1,2}},new Boolean[]{false,true,false}},
-                {4, new Integer[][]{{4, 2}, {3, 2}, {3, 2}}, new Integer[][]{{4, 2}, {3, 2}},new Boolean[]{true,true}}
+                {4, new Integer[][]{{4, 2}, {3, 2}, {2, 2}}, new Integer[][]{{4, 2}, {3, 2}}, new Boolean[]{true, true}},
+                {3, new Integer[][]{{4, 2}, {3, 2}, {2, 2}}, new Integer[][]{{2, 4}, {2, 2}, {1, 2}}, new Boolean[]{false, true, false}},
+                {4, new Integer[][]{{4, 2}, {3, 2}, {3, 2}}, new Integer[][]{{4, 2}, {3, 2}}, new Boolean[]{true, true}}
         };
     }
 }
