@@ -3,7 +3,6 @@ package com.epam.javacourses2016.task17;
 import com.epam.javacourses2016.Point2D;
 import com.epam.javacourses2016.Segment;
 
-import java.awt.geom.Line2D;
 import java.util.*;
 
 /**
@@ -23,72 +22,97 @@ public class SolverTask17 {
         if (segments.isEmpty() || segments.size() <= 1) {
             return null;
         }
+        TreeMap<Segment,Double> sortedSegments = new TreeMap<>(new Comparator<Segment>() {
 
-        TreeMap<Point2D, Double> intersectionPoints = new TreeMap<>(new Comparator<Point2D>() {
             @Override
-            public int compare(Point2D o1, Point2D o2) {
-                double x1 = o1.getX();
-                double x2 = o2.getX();
-                double y1 = o1.getY();
-                double y2 = o2.getY();
-                if (x1 == x2) {
-                    return Double.compare(y1, y2);
-                } else{
-                    return Double.compare(x1, x2);
-                }
-            }
+            public int compare(Segment o1, Segment o2) {
+                double x11 = o1.getA().getX();
+                double x12 = o1.getB().getX();
+                double x21 = o2.getA().getX();
+                double x22 = o2.getB().getX();
 
+                double minX1;
+                if (x11 < x12) {
+                    minX1 = x11;
+                } else {
+                    minX1 = x12;
+                }
+                double minX2;
+                if (x21 < x22) {
+                    minX2 = x21;
+                } else {
+                    minX2 = x22;
+                }
+                if (minX1 == minX2) {
+                    return 1;
+                }
+                return Double.compare(minX1, minX2);
+            }
         });
 
-        for (Segment firstSegment : segments) {
-            for (Segment secondSegment : segments) {
-                if (!firstSegment.equals(secondSegment) && isIntersect(firstSegment, secondSegment)) {
-                    Point2D point = findInterstionPoint(firstSegment, secondSegment);
-                    intersectionPoints.put(point, point.getX());
-                }
-            }
-
+        for (Segment segment : segments) {
+            sortedSegments.put(segment, getMinX(segment));
         }
-
-        Set minAbscissPoints = new HashSet();
-        double minX = intersectionPoints.get(intersectionPoints.firstKey());
-        for (Map.Entry<Point2D, Double> e : intersectionPoints.entrySet()) {
-            if (e.getValue() == minX) {
-                minAbscissPoints.add(e.getKey());
-            } else {
-                break;
+        double minX = Double.MAX_VALUE;
+        Set<Point2D> minAbscissPoints = new HashSet();
+        A:
+        for (Map.Entry<Segment,Double> firstEntry : sortedSegments.entrySet()) {
+            for (Map.Entry<Segment,Double> secondEntry : sortedSegments.entrySet()) {
+                if (!firstEntry.equals(secondEntry)) {
+                    if (firstEntry.getValue() > minX && secondEntry.getValue() > minX) {
+                        break A;
+                    }
+                    Point2D point = findInterstionPoint(firstEntry.getKey(), secondEntry.getKey());
+                    if (point != null) {
+                        if (point.getX() < minX) {
+                            minX = point.getX();
+                            minAbscissPoints.clear();
+                            minAbscissPoints.add(point);
+                        } else if (point.getX() == minX) {
+                            minAbscissPoints.add(point);
+                        }
+                    }
+                }
             }
         }
         return minAbscissPoints;
-
     }
 
-    public boolean isIntersect(Segment firstSegment, Segment secondSegment) {
-        boolean isIntersect = Line2D.linesIntersect(firstSegment.getA().getX(), firstSegment.getA().getY(),
-                firstSegment.getB().getX(), firstSegment.getB().getY(),
-                secondSegment.getA().getX(), secondSegment.getA().getY(),
-                secondSegment.getB().getX(), secondSegment.getB().getY());
-        return isIntersect;
-
+    private double getMinX(Segment segment) {
+        double x1 = segment.getA().getX();
+        double x2 = segment.getB().getX();
+        double minX1;
+        if (x1 < x2) {
+            minX1 = x1;
+        } else {
+            minX1 = x2;
+        }
+        return minX1;
     }
-
 
     public Point2D findInterstionPoint(Segment firstSegment, Segment secondSegment) {
-        double dx1 = firstSegment.getB().getX() - firstSegment.getA().getX();
-        double dx2 = secondSegment.getB().getX() - secondSegment.getA().getX();
-        double dy1 = firstSegment.getB().getY() - firstSegment.getA().getY();
-        double dy2 = secondSegment.getB().getY() - secondSegment.getA().getY();
 
-        double d = dy2 * dx1 - dx2 * dy1;
+        double x11 = firstSegment.getA().getX();
+        double x12 = firstSegment.getB().getX();
+        double y11 = firstSegment.getA().getY();
+        double y12 = firstSegment.getB().getY();
 
-        double u1 = (dx2 * (firstSegment.getA().getY() - secondSegment.getA().getY()) - dy2 * (firstSegment.getA().getX() - secondSegment.getA().getX())) / d;
+        double x21 = secondSegment.getA().getX();
+        double x22 = secondSegment.getB().getX();
+        double y21 = secondSegment.getA().getY();
+        double y22 = secondSegment.getB().getY();
 
-        double x = firstSegment.getA().getX() + dx1 * u1;
-        double y = firstSegment.getB().getY() + dx2 * u1;
-        if (u1 >= 0d && u1 <= 1d ) {
-            return new Point2D(x, y);
+        double d = (x11 - x12) * (x21 - x22) - (y11 - y12) * (y21 - y22);
+        double x = ((x11 * y12 - y11 * x12) * (x21 - x22) - (x11 - x12) * (x21 * y22 - y21 * x22)) / d;
+        double y = ((x11 * y12 - y11 * x12) * (y21 - y22) - (y11 - y12) * (x21 * y22 - y21 * x22)) / d;
+
+        boolean isIntersect = (((x11 <= x) && (x12 >= x) && (x21 <= x) && (x22 >= x)) || ((y11 <= y) && (y12 >= y) && (y21 <= y) && (y22 >= y)));
+
+        Point2D point = null;
+        if (isIntersect) {
+            point = new Point2D(x, y);
         }
-        return null;
+        return point;
     }
 
 }
