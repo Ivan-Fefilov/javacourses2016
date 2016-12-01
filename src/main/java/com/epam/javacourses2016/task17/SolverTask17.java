@@ -19,7 +19,7 @@ public class SolverTask17 {
      * @param segments Множество отрезков.
      * @return Множество точек пересечения, имеющих минимальную абсциссу.
      */
-    Set<Point2D> analyze(Set<Segment> segments) {
+    public Set<Point2D> analyze(Set<Segment> segments) {
         if (segments.isEmpty() || segments.size() <= 1) {
             return null;
         }
@@ -27,23 +27,31 @@ public class SolverTask17 {
         TreeMap<Point2D, Double> intersectionPoints = new TreeMap<>(new Comparator<Point2D>() {
             @Override
             public int compare(Point2D o1, Point2D o2) {
-                return Double.compare(o1.getX(), o2.getX());
+                double x1 = o1.getX();
+                double x2 = o2.getX();
+                double y1 = o1.getY();
+                double y2 = o2.getY();
+                if (x1 == x2) {
+                    return Double.compare(y1, y2);
+                } else{
+                    return Double.compare(x1, x2);
+                }
             }
+
         });
 
         for (Segment firstSegment : segments) {
             for (Segment secondSegment : segments) {
-                if (!isIntersect(firstSegment, secondSegment)) {
-                    continue;
+                if (!firstSegment.equals(secondSegment) && isIntersect(firstSegment, secondSegment)) {
+                    Point2D point = findInterstionPoint(firstSegment, secondSegment);
+                    intersectionPoints.put(point, point.getX());
                 }
-                Point2D point = findInterstionPoint(firstSegment, secondSegment);
-                intersectionPoints.put(point, point.getX());
             }
 
         }
 
-        Set<Point2D> minAbscissPoints = new HashSet<>();
-        Double minX = intersectionPoints.get(intersectionPoints.firstKey());
+        Set minAbscissPoints = new HashSet();
+        double minX = intersectionPoints.get(intersectionPoints.firstKey());
         for (Map.Entry<Point2D, Double> e : intersectionPoints.entrySet()) {
             if (e.getValue() == minX) {
                 minAbscissPoints.add(e.getKey());
@@ -66,20 +74,21 @@ public class SolverTask17 {
 
 
     public Point2D findInterstionPoint(Segment firstSegment, Segment secondSegment) {
-        double y1 = firstSegment.getA().getY() - firstSegment.getB().getY();
-        double y2 = secondSegment.getA().getY() - secondSegment.getB().getY();
-        double x1 = firstSegment.getA().getX() - firstSegment.getB().getX();
-        double x2 = secondSegment.getA().getX() - secondSegment.getB().getX();
+        double dx1 = firstSegment.getB().getX() - firstSegment.getA().getX();
+        double dx2 = secondSegment.getB().getX() - secondSegment.getA().getX();
+        double dy1 = firstSegment.getB().getY() - firstSegment.getA().getY();
+        double dy2 = secondSegment.getB().getY() - secondSegment.getA().getY();
 
-        double d = y1 * x2 - y2 * x1;
+        double d = dy2 * dx1 - dx2 * dy1;
 
-        double c1 = firstSegment.getB().getY() * firstSegment.getA().getY() - firstSegment.getB().getX() * firstSegment.getA().getY();
-        double c2 = secondSegment.getB().getY() * secondSegment.getA().getY() - secondSegment.getB().getX() * secondSegment.getA().getY();
+        double u1 = (dx2 * (firstSegment.getA().getY() - secondSegment.getA().getY()) - dy2 * (firstSegment.getA().getX() - secondSegment.getA().getX())) / d;
 
-        double xi = (x1 * c2 - x2 * c1) / d;
-        double yi = (y2 * c1 - y1 * c2) / d;
-
-        return new Point2D(xi, yi);
+        double x = firstSegment.getA().getX() + dx1 * u1;
+        double y = firstSegment.getB().getY() + dx2 * u1;
+        if (u1 >= 0d && u1 <= 1d ) {
+            return new Point2D(x, y);
+        }
+        return null;
     }
 
 }
