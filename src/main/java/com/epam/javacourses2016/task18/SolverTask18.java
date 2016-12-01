@@ -48,7 +48,7 @@ public class SolverTask18 {
                         Matrix subMatrix = null;
                         try {
                             subMatrix = this.getSubMatrix(matrix,x, y, i + 1, j + 1);
-                            if (matrixStack.contains(subMatrix) ||Objects.deepEquals(matrix, subMatrix))
+                            if (matrixStack.contains(subMatrix) || Objects.deepEquals(matrix, subMatrix))
                                 continue;
                             matrixStack.add(subMatrix);
                         } catch (NegativeArraySizeException e) {
