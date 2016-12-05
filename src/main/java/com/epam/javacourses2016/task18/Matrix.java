@@ -1,7 +1,10 @@
 package com.epam.javacourses2016.task18;
 
-import java.util.*;
+import java.util.Arrays;
 
+/**
+ * Created by Ivan on 01/12/2016.
+ */
 public class Matrix implements SolverTask18.RectangularIntegerMatrix {
 
     private int[][] matrix;
@@ -29,14 +32,15 @@ public class Matrix implements SolverTask18.RectangularIntegerMatrix {
         return matrix[indexWidth][indexHeight];
     }
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Matrix matrix1 = (Matrix) o;
+
         return Arrays.deepEquals(matrix, matrix1.matrix);
+
     }
 
     @Override
