@@ -23,10 +23,9 @@ public abstract class AbstractGraphCreator {
      * Нумерация вершин начинается с 0.
      * Допустимы операции добавления, удаления и проверки существования ребер.
      */
-    abstract static class AbstractGraph {
+    abstract class AbstractGraph {
 
-        /**
-         * Количество вершин
+        /** Количество вершин */
          */
         protected final int NUMBER_NODES;
 
@@ -36,24 +35,21 @@ public abstract class AbstractGraphCreator {
 
         /**
          * Добавление ребра в граф.
-         *
-         * @param first  Первая связываемая вершина.
+         * @param first Первая связываемая вершина.
          * @param second Вторая связываемая вершина.
          */
         public abstract void addEdge(int first, int second);
 
         /**
          * Удаление ребра из графа.
-         *
-         * @param first  Первая освобождаемая от связи вершина.
+         * @param first Первая освобождаемая от связи вершина.
          * @param second Вторая освобождаемая от связи вершина.
          */
         public abstract void removeEdge(int first, int second);
 
         /**
          * Проверка наличия ребра.
-         *
-         * @param first  Первая вершина.
+         * @param first Первая вершина.
          * @param second Вторая вершина.
          */
         public abstract boolean isExistEdge(int first, int second);
