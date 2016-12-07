@@ -26,7 +26,6 @@ public abstract class AbstractGraphCreator {
     abstract static class AbstractGraph {
 
         /** Количество вершин */
-
         protected final int NUMBER_NODES;
 
         public AbstractGraph(int numberNodes) {
