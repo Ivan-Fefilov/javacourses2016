@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class SolverTask17Test {
 
-    @Test(enabled = false, dataProvider = "segments")
+    @Test(enabled = true, dataProvider = "segments")
     public void testSegmentsIntersection(ArrayList<double[][]> segments, double[][] points) {
         SolverTask17 solver = new SolverTask17();
 
@@ -39,7 +39,7 @@ public class SolverTask17Test {
                         add(new double[][]{{1, 4}, {3, 6}});
                         add(new double[][]{{1, 6}, {3, 4}});
                     }
-                }, new double[][]{{2, 2,}, {2, 5}}}
+                }, new double[][]{{2, 2}, {2, 5}}}
         };
     }
 

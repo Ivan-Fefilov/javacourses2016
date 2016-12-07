@@ -13,10 +13,6 @@ public class Matrix implements SolverTask18.RectangularIntegerMatrix {
         this.matrix = data;
     }
 
-    public int[][] getMatrix() {
-        return matrix;
-    }
-
     @Override
     public int getWidth() {
         return matrix[0].length;
@@ -29,18 +25,22 @@ public class Matrix implements SolverTask18.RectangularIntegerMatrix {
 
     @Override
     public int getValue(int indexWidth, int indexHeight) {
-        return matrix[indexWidth][indexHeight];
+        return matrix[indexHeight][indexWidth];
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()){
+            throw new ClassCastException();
+        }
         Matrix matrix1 = (Matrix) o;
-
         return Arrays.deepEquals(matrix, matrix1.matrix);
-
     }
 
     @Override
