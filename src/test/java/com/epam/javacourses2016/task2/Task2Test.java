@@ -58,15 +58,12 @@ public class Task2Test {
 
     private Set<File> getFiles(File directory) {
         Set<File> files = new HashSet<>();
-        files.add(directory);
         for (File file : directory.listFiles()) {
-         //   files.add(file);
+            files.add(file);
             if (file.isDirectory()) {
                 files.addAll(getFiles(file));
             }
-            else files.add(file);
         }
-
         return files;
     }
 
@@ -77,20 +74,18 @@ public class Task2Test {
         tempDir.mkdirs();
         List<String> files = Arrays.asList(filesArray);
         Set<File> set = new HashSet<>();
-        set.add(tempDir.getAbsoluteFile());
         for(String s : files) {
             Path p = Paths.get(tempDirectory + s);
             File f = p.toFile();
             if(s.indexOf(".") != -1) {
-                // f.mkdirs();
                 f.createNewFile();
             }
             else f.mkdirs();
             set.add(f.getAbsoluteFile());
         }
         Set<File> newset = new SolverTask2().getFiles(tempDir.getAbsoluteFile());
-        Assert.assertEquals(set,newset);
         deleteFolder(tempDir);
+        Assert.assertEquals(set,newset);
     }
 
     public static void deleteFolder(File folder) {
@@ -108,4 +103,3 @@ public class Task2Test {
     }
 
 }
-
